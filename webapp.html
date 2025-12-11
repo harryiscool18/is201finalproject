@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mini Maze Game</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #222;
+    color: #fff;
+    font-family: Arial, sans-serif;
+  }
+  canvas {
+    border: 2px solid #fff;
+    margin-top: 20px;
+    background-color: #111;
+  }
+  h1 {
+    margin-top: 20px;
+    color: #f39c12;
+  }
+  #message {
+    margin-top: 15px;
+    font-size: 1.2em;
+    color: #2ecc71;
+  }
+  #restartBtn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #restartBtn:hover {
+    background-color: #2980b9;
+  }
+</style>
+</head>
+<body>
+
+<h1>Mini Maze Game</h1>
+<canvas id="mazeCanvas" width="400" height="400"></canvas>
+<div id="message"></div>
+<button id="restartBtn">Play Again</button>
+
+<script>
+const canvas = document.getElementById('mazeCanvas');
+const ctx = canvas.getContext('2d');
+const rows = 10;
+const cols = 10;
+const cellSize = canvas.width / cols;
+
+let maze = [];
+let player = { x: 0, y: 0 };
+let exit = { x: cols - 1, y: rows - 1 };
+
+// Generate maze with simple random walls
+function generateMaze() {
+  maze = [];
+  for (let y = 0; y < rows; y++) {
+    maze[y] = [];
+    for (let x = 0; x < cols; x++) {
+      maze[y][x] = Math.random() < 0.2 ? 1 : 0; // 20% chance of wall
+    }
+  }
+  player = { x: 0, y: 0 }; // reset player
+  maze[player.y][player.x] = 0; // ensure start is empty
+  maze[exit.y][exit.x] = 0; // ensure exit is empty
+  document.getElementById('message').textContent = ''; // clear message
+}
+
+// Draw the maze
+function drawMaze() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (maze[y][x] === 1) {
+        ctx.fillStyle = '#e74c3c';
+        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+      }
+    }
+  }
+  // Draw player
+  ctx.fillStyle = '#3498db';
+  ctx.fillRect(player.x * cellSize, player.y * cellSize, cellSize, cellSize);
+  // Draw exit
+  ctx.fillStyle = '#2ecc71';
+  ctx.fillRect(exit.x * cellSize, exit.y * cellSize, cellSize, cellSize);
+}
+
+// Move player
+function movePlayer(dx, dy) {
+  const newX = player.x + dx;
+  const newY = player.y + dy;
+  if (
+    newX >= 0 && newX < cols &&
+    newY >= 0 && newY < rows &&
+    maze[newY][newX] === 0
+  ) {
+    player.x = newX;
+    player.y = newY;
+    drawMaze();
+    checkWin();
+  }
+}
+
+// Check if player reached exit
+function checkWin() {
+  if (player.x === exit.x && player.y === exit.y) {
+    document.getElementById('message').textContent = '🎉 You reached the exit!';
+  }
+}
+
+// Listen for arrow keys
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('message').textContent) return; // stop moving after win
+  if (e.key === 'ArrowUp') movePlayer(0, -1);
+  if (e.key === 'ArrowDown') movePlayer(0, 1);
+  if (e.key === 'ArrowLeft') movePlayer(-1, 0);
+  if (e.key === 'ArrowRight') movePlayer(1, 0);
+});
+
+// Restart button
+document.getElementById('restartBtn').addEventListener('click', () => {
+  generateMaze();
+  drawMaze();
+});
+
+// Initialize
+generateMaze();
+drawMaze();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+/* Background */
+body {
+    background-color: #b8860b;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+/* First Div */
+.intro-box {
+    background-color: #eef0ff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+/* Second Div */
+.career-section {
+    background-color: #eef0ff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
+/* Third Div */
+.video-box {
+    background-color: #eef0ff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
